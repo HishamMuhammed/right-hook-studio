@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .boxer { fill: #ffd700; }
+    .glove { fill: #ff3e3e; }
+  </style>
+  
+  <!-- Boxer body -->
+  <rect class="boxer" x="30" y="20" width="40" height="60"/>
+  
+  <!-- Head -->
+  <rect class="boxer" x="35" y="10" width="30" height="30"/>
+  
+  <!-- Boxing gloves -->
+  <rect class="glove" x="20" y="40" width="20" height="15"/>
+  <rect class="glove" x="60" y="40" width="20" height="15"/>
+  
+  <!-- Legs -->
+  <rect class="boxer" x="35" y="80" width="10" height="20"/>
+  <rect class="boxer" x="55" y="80" width="10" height="20"/>
+</svg>
