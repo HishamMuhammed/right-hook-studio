@@ -79,17 +79,22 @@ const HeroContainer = styled.div`
 
 const Content = styled.div`
   text-align: center;
-  max-width: 800px;
   z-index: 3;
   animation: ${float} 6s ease-in-out infinite;
   background: rgba(43, 0, 0, 0.7);
-  padding: 3rem;
+  padding: 3rem 1.5rem;
   border-radius: var(--border-radius);
   border: 2px solid var(--primary-color);
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(255, 62, 62, 0.2);
   max-width: 800px;
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+    width: 95%;
+  }
 `;
 
 const Title = styled.h1`
@@ -137,22 +142,39 @@ const BoxerContainer = styled.div`
   filter: drop-shadow(0 0 10px rgba(255, 62, 62, 0.3));
   transition: filter var(--transition-speed) ease;
 
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+    margin: 1.5rem auto;
+  }
+
   &:hover {
     filter: drop-shadow(0 0 20px rgba(255, 62, 62, 0.6));
   }
 `;
 
 const ScrollIndicator = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   color: var(--primary-color);
-  font-size: 1rem;
-  opacity: 0.8;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
   animation: bounce 2s infinite;
-  z-index: 3;
+  z-index: 1000;
   font-family: var(--alt-font);
+  background: rgba(43, 0, 0, 0.8);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary-color);
+  backdrop-filter: blur(5px);
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 8px 16px;
+    bottom: 20px;
+  }
 
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
@@ -168,17 +190,6 @@ const ScrollIndicator = styled.div`
 `;
 
 const HeroSection = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY < 100);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <HeroContainer>
       <Content>
@@ -186,7 +197,7 @@ const HeroSection = () => {
         <Title>RIGHT HOOK STUDIOS</Title>
         <Subtitle>Crafting Pixel-Perfect Gaming Experiences</Subtitle>
       </Content>
-      {isVisible && <ScrollIndicator>▼ Scroll to explore</ScrollIndicator>}
+      <ScrollIndicator>▼ Scroll to explore</ScrollIndicator>
     </HeroContainer>
   );
 };

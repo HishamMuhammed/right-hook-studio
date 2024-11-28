@@ -18,18 +18,33 @@ const Nav = styled.nav<{ $scrolled: boolean }>`
   transition: all var(--transition-speed) ease;
   animation: ${props => props.$scrolled ? 'none' : 'float 6s ease-in-out infinite'};
 
+  @media (max-width: 768px) {
+    padding: 0.8rem;
+    width: 95%;
+    top: 10px;
+  }
+
   &:hover {
     box-shadow: 0 15px 40px rgba(255, 62, 62, 0.3);
   }
 `;
 
-const NavList = styled.ul`
+const NavList = styled.ul<{ $isOpen: boolean }>`
   display: flex;
   justify-content: center;
   gap: 2rem;
   list-style: none;
   margin: 0;
   padding: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    max-height: ${props => props.$isOpen ? '300px' : '0'};
+    overflow: hidden;
+    transition: max-height var(--transition-speed) ease;
+  }
 `;
 
 const NavItem = styled.li`
@@ -43,6 +58,12 @@ const NavItem = styled.li`
     position: relative;
     display: inline-block;
     text-shadow: 0 0 10px rgba(255, 62, 62, 0.3);
+    font-family: var(--alt-font);
+    
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      padding: 0.8rem 1rem;
+    }
     
     &:after {
       content: '';
@@ -62,8 +83,28 @@ const NavItem = styled.li`
   }
 `;
 
+const MenuButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+`;
+
 const Navigation: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,12 +121,16 @@ const Navigation: React.FC = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false);
     }
   };
 
   return (
     <Nav $scrolled={scrolled}>
-      <NavList>
+      <MenuButton onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? '×' : '☰'}
+      </MenuButton>
+      <NavList $isOpen={isOpen}>
         <NavItem>
           <a href="#hero" onClick={scrollToSection('hero')}>Home</a>
         </NavItem>

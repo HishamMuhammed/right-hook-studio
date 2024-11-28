@@ -2,7 +2,7 @@
   "name": "right-hook-studio",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://hishamk.github.io/right-hook-studio",
+  "homepage": "https://hishammuhammed.github.io/right-hook-studio",
   "dependencies": {
     "@fontsource/press-start-2p": "^5.1.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -57,6 +57,6 @@
   },
   "githubPages": {
     "remoteBranch": "main",
-    "remoteRepo": "https://github.com/hishamk/right-hook-studio.git"
+    "remoteRepo": "https://github.com/HishamMuhammed/right-hook-studio.git"
   }
 }
