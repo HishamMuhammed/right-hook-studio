@@ -9,6 +9,8 @@ import ContactSection from './sections/ContactSection';
 import RetroArcadeEffect from './components/RetroArcadeEffect';
 import { useKonamiCode } from './hooks/useKonamiCode';
 import { KonamiEffect } from './components/KonamiEffect';
+import { GlobalStyles } from './styles/GlobalStyles';
+import ScrollAnimation from './components/ScrollAnimation';
 
 const hueRotate = keyframes`
   0% { filter: hue-rotate(0deg) brightness(1.2); }
@@ -16,9 +18,9 @@ const hueRotate = keyframes`
 `;
 
 const MainContainer = styled.div<{ $powerMode: boolean }>`
-  min-height: 100vh;
-  width: 100%;
   position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
   background: var(--secondary-color);
   animation: ${props => props.$powerMode ? css`${hueRotate} 5s linear infinite` : 'none'};
   transition: all var(--transition-speed) ease;
@@ -33,6 +35,26 @@ const MainContainer = styled.div<{ $powerMode: boolean }>`
     background: var(--secondary-color);
     z-index: -1;
   }
+`;
+
+const Section = styled.section`
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+`;
+
+const ContentSection = styled(Section)`
+  background: var(--background-dark);
+  color: var(--text-color);
 `;
 
 const App = () => {
@@ -76,12 +98,37 @@ const App = () => {
 
   return (
     <MainContainer $powerMode={powerMode}>
+      <GlobalStyles />
       <Navigation />
       <HeroSection />
-      <AboutSection />
-      <GamesSection />
-      <TeamSection />
-      <ContactSection />
+      
+      <ContentSection id="about">
+        <ScrollAnimation direction="up">
+          <h2>About Us</h2>
+          <p>We craft immersive gaming experiences that push boundaries.</p>
+        </ScrollAnimation>
+      </ContentSection>
+
+      <ContentSection id="games">
+        <ScrollAnimation direction="up">
+          <h2>Our Games</h2>
+          <p>Explore our collection of innovative titles.</p>
+        </ScrollAnimation>
+      </ContentSection>
+
+      <ContentSection id="team">
+        <ScrollAnimation direction="up">
+          <h2>Our Team</h2>
+          <p>Meet the creative minds behind our games.</p>
+        </ScrollAnimation>
+      </ContentSection>
+
+      <ContentSection id="contact">
+        <ScrollAnimation direction="up">
+          <h2>Contact Us</h2>
+          <p>Get in touch with our team.</p>
+        </ScrollAnimation>
+      </ContentSection>
       {showEffect && <RetroArcadeEffect onComplete={handleEffectComplete} />}
       <KonamiEffect />
     </MainContainer>
