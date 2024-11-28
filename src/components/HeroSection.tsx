@@ -1,146 +1,203 @@
-import React from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import ScrollAnimation from './ScrollAnimation';
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 
-const HeroContainer = styled.section`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  position: relative;
-  background: var(--background-dark);
-  overflow: hidden;
-`;
-
-const HeroTitle = styled(motion.h1)`
-  font-size: clamp(3rem, 10vw, 8rem);
-  line-height: 1;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-family: var(--heading-font);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  
-  @media (max-width: 768px) {
-    font-size: clamp(2rem, 8vw, 4rem);
+const cityScroll = keyframes`
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -1000px 0;
   }
 `;
 
-const HeroSubtitle = styled(motion.p)`
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-  font-family: var(--body-font);
-  opacity: 0.8;
+const punch = keyframes`
+  0% {
+    transform: translateX(0) rotate(0);
+  }
+  50% {
+    transform: translateX(20px) rotate(5deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0);
+  }
 `;
 
-const ScrollIndicator = styled(motion.div)`
+const glowText = keyframes`
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 62, 62, 0.8),
+                 0 0 30px rgba(255, 62, 62, 0.6),
+                 0 0 40px rgba(255, 62, 62, 0.4);
+  }
+`;
+
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+`;
+
+const HeroContainer = styled.div`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--background-dark) 100%);
+  padding: 2rem 20px;
+  margin-top: 60px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNjB2NjBIMHoiLz48cGF0aCBkPSJNMzYuNTEyIDM1LjQxMmwxLjQxNC0xLjQxNEwzMCAyNS44N2wtNy45MjYgNy45MjYgMS40MTQgMS40MTRMMzAgMjguN2w2LjUxMiA2LjcxMnoiIGZpbGw9InJnYmEoMjU1LCA2MiwgNjIsIDAuMSkiIGZpbGwtcnVsZT0ibm9uemVybyIvPjwvZz48L3N2Zz4=');
+    opacity: 0.1;
+    z-index: 1;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to top, var(--background-dark) 0%, transparent 100%);
+    z-index: 2;
+  }
+`;
+
+const Content = styled.div`
+  text-align: center;
+  z-index: 3;
+  animation: ${float} 6s ease-in-out infinite;
+  background: rgba(43, 0, 0, 0.7);
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary-color);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(255, 62, 62, 0.2);
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+    width: 95%;
+  }
+`;
+
+const Title = styled.h1`
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
+  margin-bottom: 2rem;
+  animation: ${glowText} 3s ease-in-out infinite;
+  letter-spacing: 2px;
+  font-family: var(--heading-font);
+  font-size: 2.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+const Subtitle = styled.p`
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease-out forwards 0.5s;
+  font-size: 1.5rem;
+  font-family: var(--body-font);
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+`;
+
+const BoxerContainer = styled.div`
+  width: 150px;
+  height: 150px;
+  background-image: url('/boxer-sprite.png');
+  background-size: contain;
+  animation: ${punch} 1s infinite;
+  margin: 2rem auto;
+  filter: drop-shadow(0 0 10px rgba(255, 62, 62, 0.3));
+  transition: filter var(--transition-speed) ease;
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+    margin: 1.5rem auto;
+  }
+
+  &:hover {
+    filter: drop-shadow(0 0 20px rgba(255, 62, 62, 0.6));
+  }
+`;
+
+const ScrollIndicator = styled.div`
   position: fixed;
-  bottom: 2rem;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1rem;
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  z-index: 100;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
+  animation: bounce 2s infinite;
+  z-index: 1000;
+  font-family: var(--alt-font);
+  background: rgba(43, 0, 0, 0.8);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary-color);
+  backdrop-filter: blur(5px);
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 8px 16px;
+    bottom: 20px;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
 `;
-
-const Line = styled(motion.div)`
-  width: 1px;
-  height: 60px;
-  background: var(--text-color);
-  margin-top: 0.5rem;
-`;
-
-const titleAnimation = {
-  initial: { opacity: 0, y: 20 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-};
-
-const subtitleAnimation = {
-  initial: { opacity: 0, y: 20 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      delay: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-};
-
-const scrollAnimation = {
-  initial: { opacity: 0, y: -20 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      delay: 0.4,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-};
 
 const HeroSection = () => {
   return (
-    <HeroContainer id="hero">
-      <ScrollAnimation direction="up" delay={0.2}>
-        <HeroTitle
-          variants={titleAnimation}
-          initial="initial"
-          animate="animate"
-        >
-          LEVELS OF
-          <br />
-          FEELING
-          <br />
-          ARE ALL
-        </HeroTitle>
-      </ScrollAnimation>
-
-      <ScrollAnimation direction="up" delay={0.4}>
-        <HeroSubtitle
-          variants={subtitleAnimation}
-          initial="initial"
-          animate="animate"
-        >
-          Creating Immersive Digital Experiences
-        </HeroSubtitle>
-      </ScrollAnimation>
-
-      <ScrollIndicator
-        variants={scrollAnimation}
-        initial="initial"
-        animate="animate"
-      >
-        <span>Scroll</span>
-        <Line
-          animate={{
-            height: [60, 40, 60],
-            transition: {
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            },
-          }}
-        />
-      </ScrollIndicator>
+    <HeroContainer>
+      <Content>
+        <BoxerContainer />
+        <Title>RIGHT HOOK STUDIOS</Title>
+        <Subtitle>Crafting Pixel-Perfect Gaming Experiences</Subtitle>
+      </Content>
+      <ScrollIndicator>▼ Scroll to explore</ScrollIndicator>
     </HeroContainer>
   );
 };
